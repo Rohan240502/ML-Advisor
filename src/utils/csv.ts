@@ -138,10 +138,10 @@ function parseExcelFile(file: File): Promise<ParsedCSV> {
         }
 
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet, {
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, {
           header: 1,
           defval: '',
-        }) as unknown[][];
+        }) as any[];
 
         if (jsonData.length === 0) {
           reject({
@@ -151,7 +151,7 @@ function parseExcelFile(file: File): Promise<ParsedCSV> {
           return;
         }
 
-        const headers = (jsonData[0] ?? []).map(h => String(h ?? ''));
+        const headers = (jsonData[0] ?? []).map((h: any) => String(h ?? ''));
         if (headers.length === 0) {
           reject({
             code: 'NO_COLUMNS',
@@ -160,8 +160,8 @@ function parseExcelFile(file: File): Promise<ParsedCSV> {
           return;
         }
 
-        const rows = (jsonData.slice(1) ?? []).map(row =>
-          headers.map((_, idx) => String(row[idx] ?? ''))
+        const rows = (jsonData.slice(1) ?? []).map((row: any) =>
+          headers.map((_: any, idx: number) => String(row[idx] ?? ''))
         );
 
         if (rows.length === 0) {
