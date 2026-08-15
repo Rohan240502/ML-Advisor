@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import type { ParsedCSV } from '../types/analysis';
-import { parseCSVFile, validateCSVFile } from '../utils/csv';
+import { parseDataFile, validateDataFile } from '../utils/csv';
 
 interface FileUploaderProps {
   onFileParsed: (csv: ParsedCSV) => void;
@@ -14,18 +14,18 @@ export function FileUploader({ onFileParsed }: FileUploaderProps) {
 
   const handleFile = useCallback(async (file: File) => {
     setError(null);
-    const validationErr = validateCSVFile(file);
+    const validationErr = validateDataFile(file);
     if (validationErr) {
       setError(validationErr.message);
       return;
     }
     setIsParsing(true);
     try {
-      const parsed = await parseCSVFile(file);
+      const parsed = await parseDataFile(file);
       onFileParsed(parsed);
     } catch (err: unknown) {
       const e = err as { message?: string };
-      setError(e?.message ?? 'Failed to parse CSV file.');
+      setError(e?.message ?? 'Failed to parse file.');
     } finally {
       setIsParsing(false);
     }
@@ -64,7 +64,7 @@ export function FileUploader({ onFileParsed }: FileUploaderProps) {
           <span className="gradient-text">Choose smarter ML models.</span>
         </h1>
         <p className="hero-subtitle">
-          Upload any CSV to automatically detect target columns, classify ML problem types, diagnose data quality issues, and rank optimal scikit-learn models.
+          Upload CSV, Excel, JSON, TSV or TXT files to automatically detect target columns, classify ML problem types, diagnose data quality issues, and rank optimal scikit-learn models.
         </p>
 
         <div className="privacy-badges">
@@ -92,17 +92,17 @@ export function FileUploader({ onFileParsed }: FileUploaderProps) {
         onClick={() => !isParsing && fileInputRef.current?.click()}
         role="button"
         tabIndex={0}
-        aria-label="Upload CSV file"
+        aria-label="Upload data file"
         onKeyDown={e => e.key === 'Enter' && fileInputRef.current?.click()}
       >
         <input
           ref={fileInputRef}
           type="file"
-          accept=".csv"
+          accept=".csv,.xlsx,.xls,.json,.tsv,.txt"
           onChange={handleInputChange}
           style={{ display: 'none' }}
-          id="csv-file-input"
-          aria-label="Choose CSV file"
+          id="file-input"
+          aria-label="Choose data file"
         />
 
         <div className="upload-icon">
@@ -124,7 +124,7 @@ export function FileUploader({ onFileParsed }: FileUploaderProps) {
         ) : (
           <div className="upload-text">
             <p className="upload-primary">
-              {isDragOver ? 'Release to upload CSV' : 'Drag & drop your CSV file here'}
+              {isDragOver ? 'Release to upload file' : 'Drag & drop your data file here'}
             </p>
             <p className="upload-secondary">or</p>
             <button
@@ -137,9 +137,9 @@ export function FileUploader({ onFileParsed }: FileUploaderProps) {
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
-              Browse CSV File
+              Browse Data File
             </button>
-            <p className="upload-hint">Supports standard CSV format up to 10 MB</p>
+            <p className="upload-hint">Supports CSV, Excel, JSON, TSV, TXT files up to 10 MB</p>
           </div>
         )}
       </div>
