@@ -18,13 +18,6 @@ export function Navbar({ isDark, onToggleTheme, onNavigateHome }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
     <header className={`nav-bar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
@@ -36,15 +29,6 @@ export function Navbar({ isDark, onToggleTheme, onNavigateHome }: NavbarProps) {
         {/* Navigation Links & Actions */}
         <div className="nav-right">
           <nav className="nav-links">
-            <button className="nav-link-btn" onClick={() => scrollToSection('sec-how-it-works')}>
-              How It Works
-            </button>
-            <button className="nav-link-btn" onClick={() => scrollToSection('sec-features')}>
-              Features
-            </button>
-            <button className="nav-link-btn" onClick={() => scrollToSection('sec-privacy')}>
-              Privacy
-            </button>
             <a
               href="https://github.com"
               target="_blank"

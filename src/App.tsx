@@ -50,6 +50,7 @@ const NAV_ITEMS = [
 export default function App() {
   const [state, setState] = useState<AppState>({ phase: 'upload' });
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const [activeInfoTab, setActiveInfoTab] = useState<'how-it-works' | 'features' | 'privacy'>('how-it-works');
 
   const [isDark, setIsDark] = useState(() => {
     const stored = localStorage.getItem('ml-advisor-theme');
@@ -233,39 +234,68 @@ export default function App() {
           <>
             <FileUploader onFileParsed={handleFileParsed} />
 
-            {/* Informational Feature & Privacy Anchor Cards */}
-            <div className="landing-info-sections">
-              <section id="sec-how-it-works" className="card info-section-card">
-                <h3 className="card-title text-accent mb-2">How It Works</h3>
-                <p className="text-secondary text-sm leading-relaxed">
-                  ML Advisor reads your CSV dataset directly into Web Worker memory. It executes a multi-signal profiling engine to infer feature types, evaluate statistical distributions, identify candidate targets, score model compatibility, and format actionable scikit-learn preprocessing recommendations.
-                </p>
-              </section>
+            {/* Informational Tabbed Interface */}
+            <div className="landing-info-container">
+              <div className="info-tabs-nav">
+                <button 
+                  className={`info-tab-btn ${activeInfoTab === 'how-it-works' ? 'active' : ''}`}
+                  onClick={() => setActiveInfoTab('how-it-works')}
+                >
+                  How It Works
+                </button>
+                <button 
+                  className={`info-tab-btn ${activeInfoTab === 'features' ? 'active' : ''}`}
+                  onClick={() => setActiveInfoTab('features')}
+                >
+                  Features
+                </button>
+                <button 
+                  className={`info-tab-btn ${activeInfoTab === 'privacy' ? 'active' : ''}`}
+                  onClick={() => setActiveInfoTab('privacy')}
+                >
+                  Privacy
+                </button>
+              </div>
 
-              <section id="sec-features" className="card info-section-card">
-                <h3 className="card-title text-accent mb-2">Platform Features</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 text-sm">
-                  <div>
-                    <p className="font-semibold text-primary">Automated Target Detection</p>
-                    <p className="text-xs text-muted">Heuristic scoring of column uniqueness, names, and variance.</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-primary">Model Suitability Ranking</p>
-                    <p className="text-xs text-muted">Transparent sub-scores for compatibility, accuracy, speed, and interpretability.</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-primary">Health & Imbalance Diagnosis</p>
-                    <p className="text-xs text-muted">Automated health gauge and class balance detection.</p>
-                  </div>
-                </div>
-              </section>
+              <div className="info-tabs-content">
+                {activeInfoTab === 'how-it-works' && (
+                  <section id="sec-how-it-works" className="card info-section-card fade-in">
+                    <h3 className="card-title text-accent mb-3">How It Works</h3>
+                    <p className="text-secondary text-sm leading-relaxed">
+                      ML Advisor reads your CSV dataset directly into Web Worker memory. It executes a multi-signal profiling engine to infer feature types, evaluate statistical distributions, identify candidate targets, score model compatibility, and format actionable scikit-learn preprocessing recommendations.
+                    </p>
+                  </section>
+                )}
 
-              <section id="sec-privacy" className="card info-section-card">
-                <h3 className="card-title text-success mb-2">Privacy Guarantee</h3>
-                <p className="text-secondary text-sm leading-relaxed">
-                  Your data never leaves your browser window. Zero network payload requests, zero third-party telemetry, zero external cloud dependencies.
-                </p>
-              </section>
+                {activeInfoTab === 'features' && (
+                  <section id="sec-features" className="card info-section-card fade-in">
+                    <h3 className="card-title text-accent mb-3">Platform Features</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 text-sm">
+                      <div>
+                        <p className="font-semibold text-primary">Automated Target Detection</p>
+                        <p className="text-xs text-muted">Heuristic scoring of column uniqueness, names, and variance.</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-primary">Model Suitability Ranking</p>
+                        <p className="text-xs text-muted">Transparent sub-scores for compatibility, accuracy, speed, and interpretability.</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-primary">Health & Imbalance Diagnosis</p>
+                        <p className="text-xs text-muted">Automated health gauge and class balance detection.</p>
+                      </div>
+                    </div>
+                  </section>
+                )}
+
+                {activeInfoTab === 'privacy' && (
+                  <section id="sec-privacy" className="card info-section-card fade-in">
+                    <h3 className="card-title text-success mb-3">Privacy Guarantee</h3>
+                    <p className="text-secondary text-sm leading-relaxed">
+                      Your data never leaves your browser window. Zero network payload requests, zero third-party telemetry, zero external cloud dependencies.
+                    </p>
+                  </section>
+                )}
+              </div>
             </div>
           </>
         )}
@@ -527,6 +557,124 @@ export default function App() {
         }
 
         .error-icon { color: var(--danger); }
+
+        /* ── Landing Info Tabbed Interface ────────────────────────────────── */
+        .landing-info-container {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-6);
+          margin-top: var(--space-12);
+          padding: 0 var(--space-4);
+          max-width: 1200px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .info-tabs-nav {
+          display: flex;
+          gap: var(--space-3);
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        .info-tab-btn {
+          padding: 10px 20px;
+          font-family: var(--font-heading);
+          font-size: var(--text-sm);
+          font-weight: 600;
+          color: var(--text-secondary);
+          background: transparent;
+          border: 2px solid transparent;
+          border-radius: var(--radius);
+          cursor: pointer;
+          transition: all var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .info-tab-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: var(--accent-light);
+          opacity: 0;
+          transition: opacity var(--transition);
+          z-index: -1;
+        }
+
+        .info-tab-btn:hover {
+          color: var(--accent);
+          border-color: var(--accent-border);
+          background: var(--bg-subtle);
+        }
+
+        .info-tab-btn:hover::before {
+          opacity: 1;
+        }
+
+        .info-tab-btn.active {
+          color: var(--text-inverse);
+          background: var(--accent-gradient);
+          border-color: var(--accent);
+          box-shadow: 0 0 20px var(--accent-glow), 0 4px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-tabs-content {
+          animation: fadeInSmooth 300ms ease-in-out;
+        }
+
+        .info-section-card {
+          padding: var(--space-8) var(--space-6);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-lg);
+          background: var(--bg-surface);
+          box-shadow: var(--shadow);
+          animation: slideUpFade 400ms ease-out;
+        }
+
+        .fade-in {
+          animation: fadeInSmooth 300ms ease-in-out;
+        }
+
+        @keyframes fadeInSmooth {
+          from {
+            opacity: 0;
+            transform: translateY(4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slideUpFade {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @media (min-width: 768px) {
+          .info-tabs-nav {
+            gap: var(--space-4);
+          }
+
+          .info-tab-btn {
+            padding: 12px 28px;
+            font-size: var(--text-base);
+          }
+
+          .info-section-card {
+            padding: var(--space-10) var(--space-8);
+          }
+        }
       `}</style>
     </div>
   );
